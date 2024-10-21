@@ -33,7 +33,7 @@ public class Dish {
     private String name;
 
     @TableField("category_id")
-    private BigInteger category_id;
+    private BigInteger categoryId;
 
     private BigDecimal price;
 

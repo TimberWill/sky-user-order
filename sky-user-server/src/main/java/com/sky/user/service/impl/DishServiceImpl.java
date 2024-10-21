@@ -53,6 +53,7 @@ public class DishServiceImpl implements DishService {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
             DishFlavorVO dishFlavorVO = DishFlavorVO.builder()
+                    .categoryId(categoryId)
                     .categoryName(categoryName)
                     .description(dish.getDescription())
                     .id(dish.getId())

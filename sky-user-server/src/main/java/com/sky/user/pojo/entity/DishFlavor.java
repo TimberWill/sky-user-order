@@ -27,7 +27,7 @@ public class DishFlavor {
     @TableId(type = IdType.AUTO)
     private BigInteger id;
 
-    private BigInteger dish_id;
+    private BigInteger dishId;
 
     private String name;
 

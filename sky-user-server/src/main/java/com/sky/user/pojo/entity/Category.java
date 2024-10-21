@@ -34,11 +34,11 @@ public class Category {
 
     private Integer status;
 
-    private LocalDateTime create_time;
+    private LocalDateTime createTime;
 
-    private LocalDateTime update_time;
+    private LocalDateTime updateTime;
 
-    private BigInteger create_user;
+    private BigInteger createUser;
 
-    private BigInteger update_user;
+    private BigInteger updateUser;
 }
