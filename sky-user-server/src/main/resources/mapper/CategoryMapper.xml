@@ -4,14 +4,13 @@
 <mapper namespace="com.sky.user.mapper.CategoryMapper">
 
     <select id="getNameById" resultType="java.lang.String">
-        select name from sky_take_out.category where id = #{categoryId}
+        select name from sky_take_out.category where id = #{categoryId} and is_delete = 0
     </select>
 
-    <select id="getListByType" resultType="com.sky.user.pojo.entity.Category">
-        select * from sky_take_out.category where type = #{type}
-    </select>
-
-    <select id="getList" resultType="com.sky.user.pojo.entity.Category">
-        select * from sky_take_out.category
+    <select id="getCategoryListByType" resultType="com.sky.user.pojo.entity.Category">
+        select * from sky_take_out.category where is_delete = 0
+        <if test="type != null">
+            and type = #{type}
+        </if>
     </select>
 </mapper>

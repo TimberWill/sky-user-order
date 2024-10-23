@@ -5,26 +5,23 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
  * @program: sky-user-order
  * @description:
  * @author: whl
- * @create: 2024-10-20 09:39
+ * @create: 2024-10-21 16:53
  **/
-@Slf4j
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@TableName("dish_flavor")
-public class DishFlavor {
+@TableName("setmeal_dish")
+public class SetmealDish {
     /**
      * 主键id
      */
@@ -32,23 +29,39 @@ public class DishFlavor {
     private BigInteger id;
 
     /**
+     * 套餐id
+     */
+    @TableField("setmeal_id")
+    private BigInteger setmealId;
+
+    /**
      * 菜品id
      */
+    @TableField("dish_id")
     private BigInteger dishId;
 
     /**
-     * 口味名称
+     * 菜品名称
      */
+    @TableField("name")
     private String name;
 
     /**
-     * 口味值
+     * 价格
      */
-    private String value;
+    @TableField("price")
+    private BigDecimal price;
+
+    /**
+     * 菜品份数
+     */
+    @TableField("copies")
+    private Integer copies;
 
     /**
      * 是否删除
      */
     @TableField("is_delete")
     private Integer isDelete;
+
 }

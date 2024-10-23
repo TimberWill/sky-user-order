@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class DishFlavorVO {
 
     private String description;
 
-    private List<DishFlavor> flavors;
+    private List<DishFlavor> flavors = new ArrayList<>();
 
     private BigInteger id;
 

@@ -10,7 +10,7 @@ public interface CategoryMapper {
 
     String getNameById(Integer categoryId);
 
-    List<Category> getListByType(Integer type);
 
-    List<Category> getList();
+    List<Category> getCategoryListByType(Integer type);
+
 }

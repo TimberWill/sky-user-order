@@ -1,20 +1,21 @@
 package com.sky.user.service.impl;
 
 import com.sky.user.mapper.CategoryMapper;
-import com.sky.user.mapper.DishFlavorMapper;
 import com.sky.user.mapper.DishMapper;
 import com.sky.user.pojo.entity.Dish;
 import com.sky.user.pojo.entity.DishFlavor;
+import com.sky.user.pojo.item.DishesAndFlavorsItem;
 import com.sky.user.pojo.vo.DishFlavorVO;
 import com.sky.user.service.DishService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @program: sky-user-order
@@ -32,41 +33,57 @@ public class DishServiceImpl implements DishService {
     @Autowired
     private CategoryMapper categoryMapper;
 
-    @Autowired
-    private DishFlavorMapper dishFlavorMapper;
-
+    // todo: 考虑list回参时，要考虑默认顺序问题，并且要考虑是否分页
     public List<DishFlavorVO> getListByCategoryId(Integer categoryId) {
-        List<DishFlavorVO> dishFlavorVOS = new ArrayList<>();
-
-        //1. category表：根据categoryId查name信息
+        //1. 获取categoryName
         String categoryName = categoryMapper.getNameById(categoryId);
-        log.info("查询到category name: {}", categoryName);
 
-        //2. dish表：根据categoryId查description、id、image、name、price、status、update_time信息
-        List<Dish> dishes = dishMapper.getDishByCategoryId(categoryId);
-        log.info("查询到dish: {}", dishes);
+        //2. 获取所有的dishes
+        List<DishFlavorVO> dishFlavorVOS = dishMapper.getDishes(categoryId);
+        //2.1 获取所有的dish_id
+        List<BigInteger> dishIds = dishFlavorVOS.stream().map(DishFlavorVO::getId).collect(Collectors.toList());
 
-
-        //3. dish_flavor表：根据2中查到的id，在表中查flavor的id、dishId、name、value信息
-        for (Dish dish : dishes) {
-            List<DishFlavor> dishFlavor = dishFlavorMapper.getDishFlavorById(dish.getId());
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-            DishFlavorVO dishFlavorVO = DishFlavorVO.builder()
-                    .categoryId(categoryId)
-                    .categoryName(categoryName)
-                    .description(dish.getDescription())
-                    .id(dish.getId())
-                    .image(dish.getImage())
-                    .name(dish.getName())
-                    .price(dish.getPrice())
-                    .status(dish.getStatus())
-                    .updateTime(dish.getUpdateTime().format(dateTimeFormatter))
-                    .flavors(dishFlavor)
-                    .build();
-            dishFlavorVOS.add(dishFlavorVO);
-
+        //3.获得所有的dish_flavor
+        List<DishFlavor> dishFlavors = dishMapper.selectFlavorsByDishIdList(dishIds);
+        //3.1 聚合dish和dish_flavor
+        Map<BigInteger, List<DishFlavor>> flavorsMap = dishFlavors.stream().collect(Collectors.groupingBy(DishFlavor::getDishId));
+        for (DishFlavorVO dishFlavorVO : dishFlavorVOS) {
+            dishFlavorVO.setFlavors(flavorsMap.get(dishFlavorVO.getId()));
+            dishFlavorVO.setCategoryName(categoryName);
         }
+
+//        //1. 根据categoryId查categoryName
+//        String categoryName = categoryMapper.getNameById(categoryId);
+//
+//        //2. 先查出dishes，获取所有的id
+//
+//        List<DishesAndFlavorsItem> dishes = dishMapper.getDishesAndFlavors(categoryId);
+//        List<DishFlavorVO> dishFlavorVOS = new ArrayList<>();
+//
+//        //3. 获取所有的dish_flavor
+//        Map<BigInteger, List<DishesAndFlavorsItem>> collect = dishes.stream().collect(Collectors.groupingBy(DishesAndFlavorsItem::getFDishId));
+//        for (Map.Entry<BigInteger, List<DishesAndFlavorsItem>> entry : collect.entrySet()) {
+//            List<DishFlavor> dishFlavors = new ArrayList<>();
+//            BigInteger dishId = entry.getKey();
+//            List<DishesAndFlavorsItem> dishesAndFlavorsItems = entry.getValue();
+//            for (DishesAndFlavorsItem dishesAndFlavorsItem : dishesAndFlavorsItems) {
+//                DishFlavor dishFlavor = new DishFlavor();
+//                BigInteger fId = dishesAndFlavorsItem.getFId();
+//                String fValue = dishesAndFlavorsItem.getFValue();
+//                String fName = dishesAndFlavorsItem.getFName();
+//                BigInteger fDishId = dishesAndFlavorsItem.getFDishId();
+//                dishFlavor.setId(fId);
+//                dishFlavor.setValue(fValue);
+//                dishFlavor.setName(fName);
+//                dishFlavor.setDishId(fDishId);
+//                dishFlavors.add(dishFlavor);
+//            }
+//            DishFlavorVO dishFlavorVO = new DishFlavorVO();
+//            dishFlavorVO.setFlavors(dishFlavors);
+//            dishFlavorVO.setId(dishId);
+//            //其他属性
+//            dishFlavorVOS.add(dishFlavorVO);
+//        }
 
         return dishFlavorVOS;
     }

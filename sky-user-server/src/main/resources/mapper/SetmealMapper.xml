@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.user.mapper.SetmealMapper">
+
+    <select id="getList" resultType="com.sky.user.pojo.entity.Setmeal">
+        select
+            *
+        from
+            sky_take_out.setmeal
+        where
+            category_id = #{categoryId}
+        order by
+            create_time desc
+    </select>
+
+    <select id="getDishList" resultType="com.sky.user.pojo.vo.DishVO">
+        SELECT
+            sd.copies,
+            d.description,
+            d.image,
+            d.`name`
+        FROM
+            setmeal_dish AS sd
+                LEFT JOIN dish AS d ON sd.dish_id = d.id
+        WHERE
+            sd.setmeal_id = #{setmealId}
+          AND sd.is_delete = 0
+          AND d.is_delete = 0
+    </select>
+</mapper>

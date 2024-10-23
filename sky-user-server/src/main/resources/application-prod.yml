@@ -1,0 +1,25 @@
+server:
+  port: 6601
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/sky_take_out?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+
+# swagger
+#knife4j:
+#  enable: true
+#  openapi:
+#    title: 苍穹外卖-用户端接口文档
+#    description: "苍穹外卖-用户端接口文档"
+#    email: 935257967@qq.com
+#    concat: TimberWill
+#    url: https://www.timber.cn
+#    version: v1.0.0
+#    group:
+#      default:
+#        group-name: default
+#        api-rule: package
+#        api-rule-resources:
+#          - com.sky.user.controller

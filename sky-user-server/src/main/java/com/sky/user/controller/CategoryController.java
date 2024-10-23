@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,19 +25,15 @@ import java.util.List;
 @Slf4j
 public class CategoryController {
 
-    @Autowired
+    @Resource
     private CategoryService categoryService;
 
     @GetMapping("/list")
     public Result<List<Category>> getList(@Nullable Integer type){
-        List<Category> categories = new ArrayList<>();
-        if (type != null){
-            categories = categoryService.getCategoryListByType(type);
-        }else {
-            categories = categoryService.getCategoryList();
-        }
 
-        return Result.success(categories);
+        List<Category> categoryList = categoryService.getCategoryListByType(type);
+
+        return Result.success(categoryList);
     }
 
 }

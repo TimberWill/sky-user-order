@@ -3,7 +3,39 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.user.mapper.DishMapper">
 
-    <select id="getDishByCategoryId" resultType="com.sky.user.pojo.entity.Dish">
-        select * from sky_take_out.dish where category_id = #{categoryId}
+    <select id="getDishesAndFlavors" resultType="com.sky.user.pojo.item.DishesAndFlavorsItem">
+        SELECT
+            d.category_id as categoryId,
+            d.description as description,
+            df.dish_id as f_dishId,
+            df.id as f_id,
+            df.`name` as f_name,
+            df.`value` as f_value,
+            d.id as id,
+            d.image as image,
+            d.`name` as `name`,
+            d.price as price,
+            d.`status` as `status`,
+            d.update_time as updateTime
+        FROM
+            dish as d
+                LEFT JOIN
+            dish_flavor as df ON d.id = df.dish_id
+        WHERE
+            d.category_id = #{categoryId} and d.is_delete = 0 and df.is_delete = 0
     </select>
+
+    <select id="getDishes" resultType="com.sky.user.pojo.vo.DishFlavorVO">
+        select * from dish where category_id = #{categoryId} and is_delete = 0
+    </select>
+
+    <select id="selectFlavorsByDishIdList" resultType="com.sky.user.pojo.entity.DishFlavor">
+        select * from dish_flavor
+        where dish_id in
+        <foreach collection="dishIds" separator="," open="(" close=")" item="dishId">
+            #{dishId}
+        </foreach>
+        and is_delete = 0
+    </select>
+
 </mapper>

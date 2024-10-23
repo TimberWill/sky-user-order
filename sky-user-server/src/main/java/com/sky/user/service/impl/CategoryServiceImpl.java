@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,15 +20,16 @@ import java.util.List;
 @Service
 @Slf4j
 public class CategoryServiceImpl implements CategoryService {
-    @Autowired
+    @Resource
     private CategoryMapper categoryMapper;
 
     public List<Category> getCategoryListByType(Integer type) {
-        return categoryMapper.getListByType(type);
-    }
-
-    public List<Category> getCategoryList() {
-        return categoryMapper.getList();
+        try {
+           return  categoryMapper.getCategoryListByType(type);
+        }catch (Exception e){
+            log.info("获取 种类标签 失败！ >>>>>>>>>>>>>>>>>>>>>>> ", e);
+            return null;
+        }
     }
 
 
